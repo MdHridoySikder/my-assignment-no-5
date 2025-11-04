@@ -95,6 +95,55 @@ heartButtons.forEach(btn => {
 
 // call button plus clear button 
 
+const coinCounter = document.getElementById("coin-count");
+let totalCoin = parseInt(coinCounter.textContent);
 
+const callHistoryContainer = document.createElement("div");
+callHistoryContainer.id = "call-history";
+callHistoryContainer.className = "bg-white mt-3 rounded-xl p-3 space-y-2 text-gray-700 text-sm";
+document.querySelector(".col-span-3").appendChild(callHistoryContainer);
 
+const clearButton = document.querySelector(".bg-green-500.bg-green-600");
+clearButton.addEventListener("click", () => {
+  callHistoryContainer.innerHTML = "";
+  alert("✅ All call history cleared!");
+});
 
+for (let i = 1; i <= 9; i++) {
+  const callButton = document.getElementById(`call${i}`);
+  if (!callButton) continue; 
+
+  callButton.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const parentCard = callButton.closest("section");
+    const serviceName = parentCard.querySelector("h2").textContent;
+    const number = parentCard.querySelector("h1").textContent;
+
+    if (totalCoin < 20) {
+      alert("You don't have enough coins. You need 20 coins to call.");
+      return;
+    }
+
+    totalCoin -= 20;
+    coinCounter.textContent = totalCoin;
+
+    
+    alert(`Calling ${serviceName} ${number}...`);
+
+    
+    const now = new Date();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    
+    const newEntry = document.createElement("div");
+    newEntry.className = "border-b pb-1";
+    newEntry.innerHTML = `
+      <div class="flex justify-between">
+        <span>📞 ${serviceName} - ${number}</span>
+        <span class="text-gray-400 text-xs">${time}</span>
+      </div>
+    `;
+    callHistoryContainer.appendChild(newEntry);
+  });
+}
